@@ -1,4 +1,5 @@
 import Product from '../models/Product.js';
+import { uploadToCloudinary } from '../middleware/upload.js';
 
 export const getProducts = async (req, res) => {
   try {
@@ -115,7 +116,8 @@ export const createProduct = async (req, res) => {
 
     // Handle uploaded images
     if (req.files && req.files.length > 0) {
-      productData.images = req.files.map((file) => `/uploads/${file.filename}`);
+      const uploadResults = await Promise.all(req.files.map((file) => uploadToCloudinary(file)));
+      productData.images = uploadResults.map((result) => result.secure_url);
     } else if (req.body.images) {
       productData.images = Array.isArray(req.body.images) ? req.body.images : [req.body.images];
     }
@@ -159,7 +161,8 @@ export const updateProduct = async (req, res) => {
 
     // Handle uploaded images
     if (req.files && req.files.length > 0) {
-      const newImages = req.files.map((file) => `/uploads/${file.filename}`);
+      const uploadResults = await Promise.all(req.files.map((file) => uploadToCloudinary(file)));
+      const newImages = uploadResults.map((result) => result.secure_url);
       productData.images = [...(productData.existingImages || []), ...newImages];
     }
 

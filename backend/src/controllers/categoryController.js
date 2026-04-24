@@ -1,5 +1,6 @@
 import Category from '../models/Category.js';
 import Product from '../models/Product.js';
+import { uploadToCloudinary } from '../middleware/upload.js';
 
 export const getCategories = async (req, res) => {
   try {
@@ -44,7 +45,8 @@ export const createCategory = async (req, res) => {
       .replace(/(^-|-$)/g, '');
 
     if (req.file) {
-      categoryData.image = `/uploads/${req.file.filename}`;
+      const result = await uploadToCloudinary(req.file);
+      categoryData.image = result.secure_url;
     }
 
     const category = await Category.create(categoryData);
@@ -69,7 +71,8 @@ export const updateCategory = async (req, res) => {
     }
 
     if (req.file) {
-      categoryData.image = `/uploads/${req.file.filename}`;
+      const result = await uploadToCloudinary(req.file);
+      categoryData.image = result.secure_url;
     }
 
     const category = await Category.findByIdAndUpdate(

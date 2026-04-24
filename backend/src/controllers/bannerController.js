@@ -1,4 +1,5 @@
 import Banner from '../models/Banner.js';
+import { uploadToCloudinary } from '../middleware/upload.js';
 
 export const getBanners = async (req, res) => {
   try {
@@ -31,7 +32,8 @@ export const createBanner = async (req, res) => {
     const bannerData = { ...req.body };
 
     if (req.file) {
-      bannerData.image = `/uploads/${req.file.filename}`;
+      const result = await uploadToCloudinary(req.file);
+      bannerData.image = result.secure_url;
     }
 
     const banner = await Banner.create(bannerData);
@@ -46,7 +48,8 @@ export const updateBanner = async (req, res) => {
     const bannerData = { ...req.body };
 
     if (req.file) {
-      bannerData.image = `/uploads/${req.file.filename}`;
+      const result = await uploadToCloudinary(req.file);
+      bannerData.image = result.secure_url;
     }
 
     const banner = await Banner.findByIdAndUpdate(

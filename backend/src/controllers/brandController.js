@@ -1,4 +1,5 @@
 import Brand from '../models/Brand.js';
+import { uploadToCloudinary } from '../middleware/upload.js';
 
 export const getBrands = async (req, res) => {
   try {
@@ -28,7 +29,11 @@ export const getBrand = async (req, res) => {
 export const createBrand = async (req, res) => {
   try {
     const { name, slug, website, description, isActive, sortOrder } = req.body;
-    const logo = req.file ? `/uploads/${req.file.filename}` : '';
+    let logo = '';
+    if (req.file) {
+      const result = await uploadToCloudinary(req.file);
+      logo = result.secure_url;
+    }
 
     const brand = await Brand.create({
       name,
@@ -59,7 +64,8 @@ export const updateBrand = async (req, res) => {
     };
 
     if (req.file) {
-      updateData.logo = `/uploads/${req.file.filename}`;
+      const result = await uploadToCloudinary(req.file);
+      updateData.logo = result.secure_url;
     }
 
     Object.keys(updateData).forEach((key) => updateData[key] === undefined && delete updateData[key]);
