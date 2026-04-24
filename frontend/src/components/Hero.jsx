@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { ArrowRight, Shield, Truck, RotateCcw, ImageIcon, Loader2, ChevronDown } from 'lucide-react';
 import api from '../lib/api';
 
-const UPLOAD_URL = process.env.NEXT_PUBLIC_UPLOAD_URL || 'http://localhost:5000';
+const UPLOAD_URL = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api').replace('/api', '');
 
 const Hero = () => {
   const [heroBanner, setHeroBanner] = useState(null);

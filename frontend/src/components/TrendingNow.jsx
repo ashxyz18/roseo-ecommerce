@@ -6,7 +6,7 @@ import { TrendingUp, ArrowRight, Flame, Clock, Star } from 'lucide-react';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 import api from '../lib/api';
 
-const UPLOAD_URL = process.env.NEXT_PUBLIC_UPLOAD_URL || 'http://localhost:5000';
+const UPLOAD_URL = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api').replace('/api', '');
 
 const getImageUrl = (img) => {
   if (!img) return '';

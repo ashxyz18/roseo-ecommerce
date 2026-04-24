@@ -1,11 +1,11 @@
-﻿'use client';
+'use client';
 
 import React, { useState, useEffect } from 'react';
 import api from '../../../lib/api';
 import { Plus, Edit3, Trash2, X, Upload, Image, ToggleLeft, ToggleRight, Calendar, Link, ExternalLink } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-const UPLOAD_URL = process.env.NEXT_PUBLIC_UPLOAD_URL || 'http://localhost:5000';
+const UPLOAD_URL = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api').replace('/api', '');
 
 const POSITIONS = [
   { value: 'hero', label: 'Hero Banner' },
@@ -313,7 +313,7 @@ export default function AdminBannersPage() {
                     {banner.startDate
                       ? new Date(banner.startDate).toLocaleDateString()
                       : '...'}
-                    {' — '}
+                    {' � '}
                     {banner.endDate
                       ? new Date(banner.endDate).toLocaleDateString()
                       : '...'}
