@@ -544,7 +544,7 @@ export default function CheckoutPage() {
                     ) : (
                       <>
                         <Lock size={16} />
-                        Place Order — ${total.toFixed(2)}
+                        Place Order â€” ${total.toFixed(2)}
                       </>
                     )}
                   </button>

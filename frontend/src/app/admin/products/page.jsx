@@ -297,7 +297,7 @@ export default function AdminProductsPage() {
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="text-neutral-300 font-mono text-sm">{product.sku || '—'}</span>
+                      <span className="text-neutral-300 font-mono text-sm">{product.sku || 'â€”'}</span>
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex flex-col gap-1">

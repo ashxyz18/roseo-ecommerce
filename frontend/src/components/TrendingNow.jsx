@@ -72,13 +72,13 @@ const TrendingNow = () => {
               onClick={() => scroll('left')}
               className="w-10 h-10 rounded-full border border-neutral-200 flex items-center justify-center text-neutral-400 hover:text-primary-900 hover:border-primary-900 transition-all duration-300"
             >
-              ←
+              â†
             </button>
             <button
               onClick={() => scroll('right')}
               className="w-10 h-10 rounded-full border border-neutral-200 flex items-center justify-center text-neutral-400 hover:text-primary-900 hover:border-primary-900 transition-all duration-300"
             >
-              →
+              â†’
             </button>
           </div>
         </div>
@@ -146,7 +146,7 @@ const TrendingNow = () => {
                   <div className="flex items-center gap-1 mb-1.5">
                     <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
                     <span className="text-xs text-neutral-500">{product.rating?.toFixed(1) || '4.8'}</span>
-                    <span className="text-xs text-neutral-300 mx-1">·</span>
+                    <span className="text-xs text-neutral-300 mx-1">Â·</span>
                     <Clock className="w-3 h-3 text-neutral-400" />
                     <span className="text-xs text-neutral-400">2-3 days</span>
                   </div>

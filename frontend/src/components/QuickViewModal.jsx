@@ -327,7 +327,7 @@ const QuickViewModal = ({ productId, isOpen, onClose }) => {
                 }}
                 className="mt-4 text-sm text-primary-900 font-medium hover:underline text-center"
               >
-                View Full Details →
+                View Full Details â†’
               </button>
             </div>
           </div>

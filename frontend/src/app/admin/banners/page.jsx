@@ -313,7 +313,7 @@ export default function AdminBannersPage() {
                     {banner.startDate
                       ? new Date(banner.startDate).toLocaleDateString()
                       : '...'}
-                    {' — '}
+                    {' â€” '}
                     {banner.endDate
                       ? new Date(banner.endDate).toLocaleDateString()
                       : '...'}

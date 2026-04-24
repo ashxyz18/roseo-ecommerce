@@ -22,7 +22,7 @@ const ProductCard = ({ product, onQuickView }) => {
     e.stopPropagation();
     setIsWishlisted(!isWishlisted);
     if (!isWishlisted) {
-      toast.success('Added to wishlist', { icon: '❤️' });
+      toast.success('Added to wishlist', { icon: 'â¤ï¸' });
     }
   };
 
