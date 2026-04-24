@@ -82,6 +82,14 @@ class ApiClient {
     return this.put('/auth/profile', data);
   }
 
+  forgotPassword(email) {
+    return this.post('/auth/forgot-password', { email });
+  }
+
+  resetPassword(token, password) {
+    return this.post('/auth/reset-password', { token, password });
+  }
+
   // Products
   getProducts(params = {}) {
     return this.get('/products', params);
@@ -264,6 +272,15 @@ class ApiClient {
   // Auth - Register
   register(data) {
     return this.post('/auth/register', data);
+  }
+
+  // Site Settings
+  getSettings() {
+    return this.get('/settings');
+  }
+
+  updateSettings(data) {
+    return this.put('/settings', data);
   }
 }
 

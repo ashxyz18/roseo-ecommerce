@@ -138,6 +138,35 @@ export default function CheckoutPage() {
     );
   }
 
+  // Require login for checkout
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center px-4">
+        <div className="text-center max-w-md">
+          <div className="w-20 h-20 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <Lock size={40} className="text-primary-600" />
+          </div>
+          <h2 className="text-2xl font-bold text-neutral-900 mb-2">Sign in to checkout</h2>
+          <p className="text-neutral-500 mb-6">You need an account to place an order. Please login or create one.</p>
+          <div className="flex gap-4 justify-center">
+            <button
+              onClick={() => router.push('/login')}
+              className="px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-lg transition-colors"
+            >
+              Sign In
+            </button>
+            <button
+              onClick={() => router.push('/signup')}
+              className="px-6 py-3 border border-neutral-300 text-neutral-700 font-semibold rounded-lg hover:bg-neutral-50 transition-colors"
+            >
+              Create Account
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   // Order Confirmation
   if (step === 3) {
     return (

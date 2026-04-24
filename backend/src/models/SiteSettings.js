@@ -80,6 +80,16 @@ const siteSettingsSchema = new mongoose.Schema({
     symbol: { type: String, default: '$' },
   },
 
+  // Email Settings
+  smtp: {
+    host: { type: String, default: 'smtp.gmail.com' },
+    port: { type: Number, default: 587 },
+    user: { type: String, default: 'roseobd@mail.com' },
+    password: { type: String, default: '' },
+    fromName: { type: String, default: 'ROSEO' },
+    fromEmail: { type: String, default: 'roseobd@mail.com' },
+  },
+
   // Footer
   footerText: {
     type: String,

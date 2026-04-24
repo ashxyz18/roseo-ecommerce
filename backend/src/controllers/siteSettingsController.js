@@ -27,7 +27,7 @@ export const updateSettings = async (req, res) => {
     });
 
     // Update nested objects
-    const nestedFields = ['address', 'businessHours', 'socialLinks', 'seo', 'currency'];
+    const nestedFields = ['address', 'businessHours', 'socialLinks', 'seo', 'currency', 'smtp'];
 
     nestedFields.forEach((field) => {
       if (req.body[field] && typeof req.body[field] === 'object') {

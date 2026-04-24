@@ -11,6 +11,7 @@ import {
   Image,
   Award,
   MessageSquare,
+  Mail,
   LogOut,
   Menu,
   X,
@@ -29,6 +30,7 @@ const navItems = [
   { label: 'Brands', icon: Award, href: '/admin/brands' },
   { label: 'Banners', icon: Image, href: '/admin/banners' },
   { label: 'Chats', icon: MessageSquare, href: '/admin/chats' },
+  { label: 'Email', icon: Mail, href: '/admin/email' },
   { label: 'Settings', icon: Settings, href: '/admin/settings' },
 ];
 
