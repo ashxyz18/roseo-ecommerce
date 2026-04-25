@@ -1,10 +1,15 @@
 'use client';
 
 import React from 'react';
+import dynamic from 'next/dynamic';
 import { AuthProvider } from '../context/AuthContext';
 import { CartProvider } from '../context/CartContext';
 import { Toaster } from 'react-hot-toast';
-import ChatBox from '../components/ChatBox';
+
+const ChatBox = dynamic(() => import('../components/ChatBox'), {
+  ssr: false,
+  loading: () => null,
+});
 
 export function Providers({ children }) {
   return (

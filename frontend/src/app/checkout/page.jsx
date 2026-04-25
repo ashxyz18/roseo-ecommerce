@@ -2,8 +2,10 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
+import { getImageUrl } from '../../lib/image';
 import api from '../../lib/api';
 import {
   ArrowLeft,
@@ -25,7 +27,7 @@ export default function CheckoutPage() {
   const { items, subtotal, clearCart, itemCount } = useCart();
   const { user } = useAuth();
 
-  const [step, setStep] = useState(1); // 1: shipping, 2: payment, 3: confirmation
+  const [step, setStep] = useState(1);
   const [placing, setPlacing] = useState(false);
   const [orderId, setOrderId] = useState(null);
 
@@ -119,7 +121,6 @@ export default function CheckoutPage() {
     }
   };
 
-  // Redirect if cart is empty (unless on confirmation step)
   if (items.length === 0 && step !== 3) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center px-4">
@@ -138,7 +139,6 @@ export default function CheckoutPage() {
     );
   }
 
-  // Require login for checkout
   if (!user) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center px-4">
@@ -167,7 +167,6 @@ export default function CheckoutPage() {
     );
   }
 
-  // Order Confirmation
   if (step === 3) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center px-4">
@@ -201,7 +200,6 @@ export default function CheckoutPage() {
   return (
     <div className="min-h-screen bg-neutral-50">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
         <div className="flex items-center gap-4 mb-8">
           <button
             onClick={() => router.push('/cart')}
@@ -212,7 +210,6 @@ export default function CheckoutPage() {
           <h1 className="text-2xl font-bold text-neutral-900">Checkout</h1>
         </div>
 
-        {/* Progress Steps */}
         <div className="flex items-center justify-center gap-4 mb-10">
           {[
             { num: 1, label: 'Shipping' },
@@ -247,9 +244,7 @@ export default function CheckoutPage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Form */}
           <div className="lg:col-span-2">
-            {/* Step 1: Shipping */}
             {step === 1 && (
               <div className="bg-white rounded-xl border border-neutral-200 p-6">
                 <div className="flex items-center gap-2 mb-6">
@@ -413,10 +408,8 @@ export default function CheckoutPage() {
               </div>
             )}
 
-            {/* Step 2: Payment */}
             {step === 2 && (
               <div className="space-y-6">
-                {/* Payment Method */}
                 <div className="bg-white rounded-xl border border-neutral-200 p-6">
                   <div className="flex items-center gap-2 mb-6">
                     <CreditCard size={20} className="text-primary-400" />
@@ -528,7 +521,6 @@ export default function CheckoutPage() {
                   )}
                 </div>
 
-                {/* Shipping Summary */}
                 <div className="bg-white rounded-xl border border-neutral-200 p-6">
                   <div className="flex items-center gap-2 mb-4">
                     <MapPin size={18} className="text-primary-400" />
@@ -553,7 +545,6 @@ export default function CheckoutPage() {
                   </div>
                 </div>
 
-                {/* Actions */}
                 <div className="flex items-center justify-between">
                   <button
                     onClick={() => setStep(1)}
@@ -584,30 +575,26 @@ export default function CheckoutPage() {
             )}
           </div>
 
-          {/* Order Summary Sidebar */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-xl border border-neutral-200 p-6 sticky top-24">
               <h2 className="text-lg font-bold text-neutral-900 mb-4">
                 Order Summary ({itemCount} item{itemCount !== 1 ? 's' : ''})
               </h2>
 
-              {/* Cart Items */}
               <div className="space-y-3 mb-4 max-h-64 overflow-y-auto">
                 {items.map(({ product, quantity }) => (
                   <div key={product._id} className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-neutral-100 rounded-lg flex-shrink-0 flex items-center justify-center overflow-hidden">
+                    <div className="w-12 h-12 bg-neutral-100 rounded-lg flex-shrink-0 overflow-hidden relative">
                       {product.images?.[0] ? (
-                        <img
-                          src={
-                            product.images[0].startsWith('http')
-                              ? product.images[0]
-                              : `${UPLOAD_URL}${product.images[0]}`
-                          }
+                        <Image
+                          src={getImageUrl(product.images[0])}
                           alt={product.name}
-                          className="w-full h-full object-cover"
+                          fill
+                          sizes="48px"
+                          className="object-cover"
                         />
                       ) : (
-                        <span className="text-sm font-bold text-neutral-300">{product.name?.charAt(0) || 'R'}</span>
+                        <span className="text-sm font-bold text-neutral-300 absolute inset-0 flex items-center justify-center">{product.name?.charAt(0) || 'R'}</span>
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
@@ -621,7 +608,6 @@ export default function CheckoutPage() {
                 ))}
               </div>
 
-              {/* Price Breakdown */}
               <div className="border-t border-neutral-200 pt-4 space-y-2 text-sm">
                 <div className="flex justify-between text-neutral-600">
                   <span>Subtotal</span>
@@ -647,7 +633,6 @@ export default function CheckoutPage() {
                 </div>
               </div>
 
-              {/* Security */}
               <div className="mt-6 flex items-center gap-2 text-xs text-neutral-500 bg-neutral-50 p-3 rounded-lg">
                 <Shield size={14} className="text-green-500 flex-shrink-0" />
                 Your payment information is encrypted and secure.

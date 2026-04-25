@@ -2,8 +2,10 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import Image from 'next/image';
 import api from '../../../lib/api';
 import { useCart } from '../../../context/CartContext';
+import { getImageUrl } from '../../../lib/image';
 import {
   ShoppingCart,
   Heart,
@@ -20,17 +22,10 @@ import {
   ZoomIn,
   Info,
   FileText,
-  MessageSquare
+  MessageSquare,
+  X
 } from 'lucide-react';
 import toast from 'react-hot-toast';
-
-const UPLOAD_URL = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api').replace('/api', '');
-
-const getImageUrl = (img) => {
-  if (!img) return '';
-  if (img.startsWith('http')) return img;
-  return `${UPLOAD_URL}${img}`;
-};
 
 export default function ProductDetailPage() {
   const params = useParams();
@@ -56,7 +51,6 @@ export default function ProductDetailPage() {
     }
   }, [params.id]);
 
-  // Track recently viewed
   useEffect(() => {
     if (product?._id) {
       try {
@@ -105,7 +99,6 @@ export default function ProductDetailPage() {
     router.push('/checkout');
   };
 
-  // Image zoom functionality
   const handleMouseMove = (e) => {
     if (!imageRef.current) return;
     
@@ -172,11 +165,14 @@ export default function ProductDetailPage() {
               ref={imageRef}
             >
               {product.images && product.images.length > 0 ? (
-                <img
+                <Image
                   src={getImageUrl(product.images[activeImage])}
                   alt={product.name}
-                  className="w-full h-full object-cover transition-transform duration-300"
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  className="object-cover transition-transform duration-300"
                   style={zoomStyle}
+                  priority
                 />
               ) : (
                 <div className="flex items-center justify-center h-full">
@@ -221,13 +217,15 @@ export default function ProductDetailPage() {
                   <button
                     key={idx}
                     onClick={() => setActiveImage(idx)}
-                    className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-colors ${activeImage === idx
+                    className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-colors relative ${activeImage === idx
                       ? 'border-neutral-900' : 'border-neutral-200 hover:border-neutral-400'}`}
                   >
-                    <img
+                    <Image
                       src={getImageUrl(img)}
                       alt={`${product.name} ${idx + 1}`}
-                      className="w-full h-full object-cover"
+                      fill
+                      sizes="80px"
+                      className="object-cover"
                     />
                   </button>
                 ))}
@@ -237,12 +235,10 @@ export default function ProductDetailPage() {
 
           {/* Sticky Details Section */}
           <div className="lg:sticky lg:top-24 space-y-6 self-start">
-            {/* SKU */}
             <div className="text-sm text-neutral-500">
               SKU: {product.sku || 'N/A'}
             </div>
             
-            {/* Category & Featured Badges */}
             <div className="flex items-center gap-2">
               <span className="px-3 py-1 bg-neutral-100 text-neutral-600 text-xs font-medium rounded-md capitalize">
                 {product.category}
@@ -254,12 +250,10 @@ export default function ProductDetailPage() {
               )}
             </div>
 
-            {/* Title */}
             <h1 className="text-3xl lg:text-4xl font-bold text-neutral-900">
               {product.name}
             </h1>
 
-            {/* Rating */}
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-0.5">
                 {[...Array(5)].map((_, i) => (
@@ -277,7 +271,6 @@ export default function ProductDetailPage() {
               </span>
             </div>
 
-            {/* Price */}
             <div className="flex items-end gap-3">
               <span className="text-3xl font-bold text-neutral-900">
                 ${product.price?.toFixed(2)}
@@ -295,7 +288,6 @@ export default function ProductDetailPage() {
             </div>
 
             <div className="pt-4 border-t border-neutral-100">
-              {/* Colors */}
               {product.colors && product.colors.length > 0 && (
                 <div className="mb-4">
                   <span className="block text-sm font-medium text-neutral-800 mb-3">
@@ -326,7 +318,6 @@ export default function ProductDetailPage() {
                 </div>
               )}
 
-              {/* Stock Status */}
               <div className="flex items-center gap-2 mb-4">
                 {product.stock > 0 ? (
                   <>
@@ -343,7 +334,6 @@ export default function ProductDetailPage() {
                 )}
               </div>
 
-              {/* Quantity & Actions */}
               <div className="flex items-center gap-3 mb-4">
                 <div className="flex items-center border border-neutral-200 rounded-lg">
                   <button
@@ -381,7 +371,6 @@ export default function ProductDetailPage() {
                 </button>
               </div>
 
-              {/* Share */}
               <button
                 onClick={() => {
                   navigator.clipboard.writeText(window.location.href);
@@ -394,7 +383,6 @@ export default function ProductDetailPage() {
               </button>
             </div>
 
-            {/* Features */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-6 border-t border-neutral-200">
               <div className="flex items-center gap-3 p-3 bg-neutral-50 rounded-lg">
                 <Truck size={18} className="text-neutral-400" />
@@ -551,12 +539,14 @@ export default function ProductDetailPage() {
                   }}
                   className="group bg-white rounded-lg border border-neutral-200 overflow-hidden hover:border-neutral-400 transition-colors text-left"
                 >
-                  <div className="aspect-square bg-neutral-50 flex items-center justify-center">
+                  <div className="aspect-square bg-neutral-50 flex items-center justify-center relative overflow-hidden">
                     {p.images && p.images[0] ? (
-                      <img
+                      <Image
                         src={getImageUrl(p.images[0])}
                         alt={p.name}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        fill
+                        sizes="(max-width: 768px) 50vw, 25vw"
+                        className="object-cover group-hover:scale-105 transition-transform duration-300"
                       />
                     ) : (
                       <span className="text-4xl font-bold text-neutral-200">{p.name?.charAt(0) || 'R'}</span>
@@ -592,11 +582,16 @@ export default function ProductDetailPage() {
             </button>
             
             {product.images && product.images[activeImage] && (
-              <img
-                src={getImageUrl(product.images[activeImage])}
-                alt={product.name}
-                className="w-full max-h-[80vh] object-contain"
-              />
+              <div className="relative w-full" style={{ height: '80vh' }}>
+                <Image
+                  src={getImageUrl(product.images[activeImage])}
+                  alt={product.name}
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 896px"
+                  className="object-contain"
+                  priority
+                />
+              </div>
             )}
             
             {product.images && product.images.length > 1 && (
@@ -605,13 +600,15 @@ export default function ProductDetailPage() {
                   <button
                     key={idx}
                     onClick={() => setActiveImage(idx)}
-                    className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-colors ${activeImage === idx
+                    className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-colors relative ${activeImage === idx
                       ? 'border-white' : 'border-white/30 hover:border-white/60'}`}
                   >
-                    <img
+                    <Image
                       src={getImageUrl(img)}
                       alt=""
-                      className="w-full h-full object-cover"
+                      fill
+                      sizes="64px"
+                      className="object-cover"
                     />
                   </button>
                 ))}

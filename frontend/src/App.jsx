@@ -2,17 +2,31 @@
 
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
+import dynamic from 'next/dynamic';
 import { ArrowUp } from 'lucide-react';
 import Navbar from './components/Navbar';
 import AnnouncementBar from './components/AnnouncementBar';
 import Hero from './components/Hero';
 import FilterTabs from './components/FilterTabs';
 import ProductGrid from './components/ProductGrid';
-import Testimonials from './components/Testimonials';
-import Features from './components/Features';
-import RecentlyViewed from './components/RecentlyViewed';
-import QuickViewModal from './components/QuickViewModal';
 import { useScrollPosition } from './hooks/useScrollReveal';
+
+const Testimonials = dynamic(() => import('./components/Testimonials'), {
+  loading: () => <div className="py-20 bg-neutral-50" />,
+});
+
+const Features = dynamic(() => import('./components/Features'), {
+  loading: () => <div className="py-20 bg-white" />,
+});
+
+const RecentlyViewed = dynamic(() => import('./components/RecentlyViewed'), {
+  loading: () => null,
+});
+
+const QuickViewModal = dynamic(() => import('./components/QuickViewModal'), {
+  ssr: false,
+  loading: () => null,
+});
 
 function App() {
   const searchParams = useSearchParams();
@@ -191,7 +205,7 @@ function App() {
                 </span>
                 <span className="flex items-center gap-2">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 012 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                   Global Shipping
                 </span>
