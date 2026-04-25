@@ -2,8 +2,9 @@
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { useCart } from '../../context/CartContext';
-import api from '../../lib/api';
+import { getImageUrl } from '../../lib/image';
 import {
   Minus,
   Plus,
@@ -17,8 +18,6 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-const UPLOAD_URL = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api').replace('/api', '');
-
 export default function CartPage() {
   const router = useRouter();
   const { items, removeItem, updateQuantity, clearCart, subtotal, itemCount } = useCart();
@@ -26,12 +25,6 @@ export default function CartPage() {
   const shippingCost = subtotal > 50 ? 0 : 9.99;
   const tax = subtotal * 0.08;
   const total = subtotal + shippingCost + tax;
-
-  const getImageUrl = (img) => {
-    if (!img) return '';
-    if (img.startsWith('http')) return img;
-    return `${UPLOAD_URL}${img}`;
-  };
 
   if (items.length === 0) {
     return (
@@ -55,7 +48,6 @@ export default function CartPage() {
   return (
     <div className="min-h-screen bg-neutral-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold text-neutral-900">Shopping Cart</h1>
@@ -71,23 +63,23 @@ export default function CartPage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Cart Items */}
           <div className="lg:col-span-2 space-y-4">
             {items.map(({ product, quantity }) => (
               <div
                 key={product._id}
                 className="bg-white rounded-xl border border-neutral-200 p-4 sm:p-6 flex gap-4 sm:gap-6"
               >
-                {/* Product Image */}
                 <button
                   onClick={() => router.push(`/products/${product._id}`)}
-                  className="flex-shrink-0 w-24 h-24 sm:w-32 sm:h-32 bg-gradient-to-br from-neutral-50 to-neutral-100 rounded-lg overflow-hidden"
+                  className="flex-shrink-0 w-24 h-24 sm:w-32 sm:h-32 bg-gradient-to-br from-neutral-50 to-neutral-100 rounded-lg overflow-hidden relative"
                 >
                   {product.images && product.images[0] ? (
-                    <img
+                    <Image
                       src={getImageUrl(product.images[0])}
                       alt={product.name}
-                      className="w-full h-full object-cover"
+                      fill
+                      sizes="(max-width: 640px) 96px, 128px"
+                      className="object-cover"
                     />
                   ) : (
                     <div className="flex items-center justify-center h-full">
@@ -96,7 +88,6 @@ export default function CartPage() {
                   )}
                 </button>
 
-                {/* Product Info */}
                 <div className="flex-1 min-w-0">
                   <button
                     onClick={() => router.push(`/products/${product._id}`)}
@@ -114,7 +105,6 @@ export default function CartPage() {
                   )}
 
                   <div className="flex items-end justify-between mt-4">
-                    {/* Quantity */}
                     <div className="flex items-center border border-neutral-200 rounded-lg">
                       <button
                         onClick={() => updateQuantity(product._id, quantity - 1)}
@@ -133,7 +123,6 @@ export default function CartPage() {
                       </button>
                     </div>
 
-                    {/* Price & Remove */}
                     <div className="flex items-center gap-4">
                       <div className="text-right">
                         <p className="font-bold text-neutral-900">
@@ -158,7 +147,6 @@ export default function CartPage() {
               </div>
             ))}
 
-            {/* Clear Cart */}
             <div className="flex justify-end">
               <button
                 onClick={() => {
@@ -172,12 +160,10 @@ export default function CartPage() {
             </div>
           </div>
 
-          {/* Order Summary */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-xl border border-neutral-200 p-6 sticky top-24">
               <h2 className="text-lg font-bold text-neutral-900 mb-4">Order Summary</h2>
 
-              {/* Coupon */}
               <div className="flex gap-2 mb-6">
                 <div className="flex-1 relative">
                   <Tag size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
@@ -192,7 +178,6 @@ export default function CartPage() {
                 </button>
               </div>
 
-              {/* Price Breakdown */}
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between text-neutral-600">
                   <span>Subtotal</span>
@@ -218,7 +203,6 @@ export default function CartPage() {
                 </div>
               </div>
 
-              {/* Checkout Button */}
               <button
                 onClick={() => router.push('/checkout')}
                 className="w-full mt-6 px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-lg transition-colors"
@@ -226,7 +210,6 @@ export default function CartPage() {
                 Proceed to Checkout
               </button>
 
-              {/* Trust Badges */}
               <div className="mt-6 space-y-2">
                 <div className="flex items-center gap-2 text-xs text-neutral-500">
                   <Truck size={14} className="text-primary-400" />

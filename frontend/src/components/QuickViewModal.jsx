@@ -1,18 +1,12 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { X, Star, ShoppingCart, Heart, Minus, Plus, Truck, Shield, RotateCcw, Share2, Check } from 'lucide-react';
+import Image from 'next/image';
+import { X, Star, ShoppingCart, Heart, Minus, Plus, Truck, Shield, RotateCcw, Check } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { getImageUrl } from '../lib/image';
 import api from '../lib/api';
 import toast from 'react-hot-toast';
-
-const UPLOAD_URL = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api').replace('/api', '');
-
-const getImageUrl = (img) => {
-  if (!img) return '';
-  if (img.startsWith('http')) return img;
-  return `${UPLOAD_URL}${img}`;
-};
 
 const QuickViewModal = ({ productId, isOpen, onClose }) => {
   const { addItem } = useCart();
@@ -81,15 +75,12 @@ const QuickViewModal = ({ productId, isOpen, onClose }) => {
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-      {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/60 backdrop-blur-sm"
         onClick={onClose}
       />
 
-      {/* Modal */}
       <div className="relative bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden animate-scale-in">
-        {/* Close button */}
         <button
           onClick={onClose}
           className="absolute top-4 right-4 z-10 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center text-neutral-400 hover:text-neutral-900 hover:bg-white transition-all duration-200 shadow-sm"
@@ -103,14 +94,15 @@ const QuickViewModal = ({ productId, isOpen, onClose }) => {
           </div>
         ) : product ? (
           <div className="grid grid-cols-1 md:grid-cols-2 max-h-[90vh] overflow-y-auto">
-            {/* Image Section */}
             <div className="bg-neutral-50 p-6">
               <div className="relative aspect-square rounded-xl overflow-hidden mb-4">
                 {product.images && product.images.length > 0 ? (
-                  <img
+                  <Image
                     src={getImageUrl(product.images[activeImage])}
                     alt={product.name}
-                    className="w-full h-full object-cover"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    className="object-cover"
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
@@ -124,35 +116,36 @@ const QuickViewModal = ({ productId, isOpen, onClose }) => {
                 )}
               </div>
 
-              {/* Thumbnails */}
               {product.images && product.images.length > 1 && (
                 <div className="flex gap-2 overflow-x-auto pb-1">
                   {product.images.map((img, idx) => (
                     <button
                       key={idx}
                       onClick={() => setActiveImage(idx)}
-                      className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-colors ${
+                      className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-colors relative ${
                         activeImage === idx ? 'border-primary-900' : 'border-neutral-200 hover:border-neutral-400'
                       }`}
                     >
-                      <img src={getImageUrl(img)} alt="" className="w-full h-full object-cover" />
+                      <Image
+                        src={getImageUrl(img)}
+                        alt=""
+                        fill
+                        sizes="64px"
+                        className="object-cover"
+                      />
                     </button>
                   ))}
                 </div>
               )}
             </div>
 
-            {/* Details Section */}
             <div className="p-6 md:p-8 flex flex-col">
-              {/* Category badge */}
               <span className="inline-flex self-start px-3 py-1 bg-neutral-100 text-neutral-600 text-xs font-medium rounded-md capitalize mb-3">
                 {product.category}
               </span>
 
-              {/* Title */}
               <h2 className="text-2xl font-bold text-neutral-900 mb-3">{product.name}</h2>
 
-              {/* Rating */}
               <div className="flex items-center gap-2 mb-4">
                 <div className="flex items-center gap-0.5">
                   {[...Array(5)].map((_, i) => (
@@ -169,7 +162,6 @@ const QuickViewModal = ({ productId, isOpen, onClose }) => {
                 </span>
               </div>
 
-              {/* Price */}
               <div className="flex items-end gap-3 mb-4">
                 <span className="text-3xl font-bold text-neutral-900">${product.price?.toFixed(2)}</span>
                 {product.originalPrice && product.originalPrice > product.price && (
@@ -182,19 +174,16 @@ const QuickViewModal = ({ productId, isOpen, onClose }) => {
                 )}
               </div>
 
-              {/* Description */}
               <p className="text-sm text-neutral-500 leading-relaxed mb-4 line-clamp-3">
                 {product.shortDescription || product.description || 'Premium quality leather product crafted with care.'}
               </p>
 
-              {/* Material */}
               {product.material && (
                 <div className="text-sm text-neutral-500 mb-4">
                   <span className="font-medium text-neutral-800">Material:</span> {product.material}
                 </div>
               )}
 
-              {/* Colors */}
               {product.colors && product.colors.length > 0 && (
                 <div className="mb-4">
                   <span className="block text-sm font-medium text-neutral-800 mb-2">
@@ -228,7 +217,6 @@ const QuickViewModal = ({ productId, isOpen, onClose }) => {
                 </div>
               )}
 
-              {/* Stock */}
               <div className="flex items-center gap-2 mb-5">
                 {product.stock > 0 ? (
                   <>
@@ -243,7 +231,6 @@ const QuickViewModal = ({ productId, isOpen, onClose }) => {
                 )}
               </div>
 
-              {/* Quantity & Actions */}
               <div className="flex items-center gap-3 mb-5">
                 <div className="flex items-center border border-neutral-200 rounded-lg">
                   <button
@@ -303,7 +290,6 @@ const QuickViewModal = ({ productId, isOpen, onClose }) => {
                 Buy Now
               </button>
 
-              {/* Features */}
               <div className="grid grid-cols-3 gap-3 pt-5 border-t border-neutral-200 mt-auto">
                 <div className="flex flex-col items-center gap-1.5 p-2 bg-neutral-50 rounded-lg">
                   <Truck className="w-4 h-4 text-neutral-400" />
@@ -319,7 +305,6 @@ const QuickViewModal = ({ productId, isOpen, onClose }) => {
                 </div>
               </div>
 
-              {/* View full details link */}
               <button
                 onClick={() => {
                   onClose();
@@ -327,7 +312,7 @@ const QuickViewModal = ({ productId, isOpen, onClose }) => {
                 }}
                 className="mt-4 text-sm text-primary-900 font-medium hover:underline text-center"
               >
-                View Full Details â†’
+                View Full Details →
               </button>
             </div>
           </div>

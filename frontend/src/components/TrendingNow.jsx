@@ -2,17 +2,11 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { TrendingUp, ArrowRight, Flame, Clock, Star } from 'lucide-react';
 import { useScrollReveal } from '../hooks/useScrollReveal';
+import { getImageUrl } from '../lib/image';
 import api from '../lib/api';
-
-const UPLOAD_URL = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api').replace('/api', '');
-
-const getImageUrl = (img) => {
-  if (!img) return '';
-  if (img.startsWith('http')) return img;
-  return `${UPLOAD_URL}${img}`;
-};
 
 const TrendingNow = () => {
   const router = useRouter();
@@ -50,7 +44,6 @@ const TrendingNow = () => {
   return (
     <section className="py-8 bg-white relative overflow-hidden" ref={ref}>
       <div className="container relative">
-        {/* Header */}
         <div
           className={`flex items-end justify-between mb-8 transition-all duration-700 ${
             isRevealed ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
@@ -72,18 +65,17 @@ const TrendingNow = () => {
               onClick={() => scroll('left')}
               className="w-10 h-10 rounded-full border border-neutral-200 flex items-center justify-center text-neutral-400 hover:text-primary-900 hover:border-primary-900 transition-all duration-300"
             >
-              â†
+              ←
             </button>
             <button
               onClick={() => scroll('right')}
               className="w-10 h-10 rounded-full border border-neutral-200 flex items-center justify-center text-neutral-400 hover:text-primary-900 hover:border-primary-900 transition-all duration-300"
             >
-              â†’
+              →
             </button>
           </div>
         </div>
 
-        {/* Horizontal scroll */}
         <div
           ref={scrollContainerRef}
           className="flex gap-5 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory"
@@ -99,13 +91,14 @@ const TrendingNow = () => {
               onClick={() => router.push(`/products/${product._id}`)}
             >
               <div className="bg-white rounded-xl border border-neutral-200 overflow-hidden hover:shadow-xl hover:-translate-y-1 hover:border-neutral-300 transition-all duration-500">
-                {/* Image */}
                 <div className="relative aspect-[4/3] bg-neutral-50 overflow-hidden">
                   {product.images && product.images[0] ? (
-                    <img
+                    <Image
                       src={getImageUrl(product.images[0])}
                       alt={product.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                      fill
+                      sizes="288px"
+                      className="object-cover group-hover:scale-105 transition-transform duration-700"
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
@@ -115,12 +108,10 @@ const TrendingNow = () => {
                     </div>
                   )}
 
-                  {/* Trending rank badge */}
                   <div className="absolute top-3 left-3 w-8 h-8 bg-primary-900 text-white rounded-full flex items-center justify-center text-xs font-bold shadow-md">
                     {index + 1}
                   </div>
 
-                  {/* Quick add overlay */}
                   <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/50 to-transparent p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
                     <button
                       onClick={(e) => {
@@ -133,7 +124,6 @@ const TrendingNow = () => {
                     </button>
                   </div>
 
-                  {/* Discount badge */}
                   {product.originalPrice && product.originalPrice > product.price && (
                     <div className="absolute top-3 right-3 bg-red-500 text-white px-2 py-0.5 rounded text-[10px] font-bold">
                       -{Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}%
@@ -141,12 +131,11 @@ const TrendingNow = () => {
                   )}
                 </div>
 
-                {/* Info */}
                 <div className="p-4">
                   <div className="flex items-center gap-1 mb-1.5">
                     <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
                     <span className="text-xs text-neutral-500">{product.rating?.toFixed(1) || '4.8'}</span>
-                    <span className="text-xs text-neutral-300 mx-1">Â·</span>
+                    <span className="text-xs text-neutral-300 mx-1">·</span>
                     <Clock className="w-3 h-3 text-neutral-400" />
                     <span className="text-xs text-neutral-400">2-3 days</span>
                   </div>
@@ -168,7 +157,6 @@ const TrendingNow = () => {
           ))}
         </div>
 
-        {/* View all link */}
         <div
           className={`text-center mt-8 transition-all duration-700 delay-500 ${
             isRevealed ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'

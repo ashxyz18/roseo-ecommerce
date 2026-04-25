@@ -3,9 +3,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { ArrowRight, Shield, Truck, RotateCcw, ImageIcon, Loader2, ChevronDown } from 'lucide-react';
+import { getImageUrl } from '../lib/image';
 import api from '../lib/api';
-
-const UPLOAD_URL = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api').replace('/api', '');
 
 const Hero = () => {
   const [heroBanner, setHeroBanner] = useState(null);
@@ -43,12 +42,6 @@ const Hero = () => {
     const x = (e.clientX - rect.left) / rect.width - 0.5;
     const y = (e.clientY - rect.top) / rect.height - 0.5;
     setMousePos({ x, y });
-  };
-
-  const getImageUrl = (img) => {
-    if (!img) return '';
-    if (img.startsWith('http')) return img;
-    return `${UPLOAD_URL}${img}`;
   };
 
   const handleStartShopping = () => {

@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import Image from 'next/image';
+import { getImageUrl, getLogoUrl } from '../lib/image';
 import api from '../lib/api';
-
-const UPLOAD_URL = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api').replace('/api', '');
 
 const BrandLogos = () => {
   const [brands, setBrands] = useState([]);
@@ -45,15 +45,8 @@ const BrandLogos = () => {
     }
   };
 
-  const getLogoUrl = (logo) => {
-    if (!logo) return '';
-    if (logo.startsWith('http')) return logo;
-    return `${UPLOAD_URL}${logo}`;
-  };
-
   if (loading || brands.length === 0) return null;
 
-  // Duplicate brands for seamless marquee loop
   const marqueeBrands = [...brands, ...brands];
 
   return (
@@ -63,7 +56,6 @@ const BrandLogos = () => {
         isVisible ? 'opacity-100' : 'opacity-0'
       }`}
     >
-      {/* Marquee Container */}
       <div className="marquee-container">
         <div className="marquee-track">
           {marqueeBrands.map((brand, index) => (
@@ -73,9 +65,11 @@ const BrandLogos = () => {
             >
               <div className="w-24 h-24 bg-white rounded-xl border border-neutral-200 flex flex-col items-center justify-center group-hover:border-primary-300 group-hover:shadow-md transition-all duration-300 overflow-hidden group-hover:scale-105">
                 {brand.logo ? (
-                  <img
+                  <Image
                     src={getLogoUrl(brand.logo)}
                     alt={brand.name}
+                    width={96}
+                    height={96}
                     className="w-full h-full object-contain p-3 group-hover:scale-110 transition-transform duration-300"
                   />
                 ) : (

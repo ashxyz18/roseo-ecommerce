@@ -2,17 +2,11 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { Clock, ArrowRight, X } from 'lucide-react';
 import { useScrollReveal } from '../hooks/useScrollReveal';
+import { getImageUrl } from '../lib/image';
 import api from '../lib/api';
-
-const UPLOAD_URL = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api').replace('/api', '');
-
-const getImageUrl = (img) => {
-  if (!img) return '';
-  if (img.startsWith('http')) return img;
-  return `${UPLOAD_URL}${img}`;
-};
 
 const RecentlyViewed = () => {
   const router = useRouter();
@@ -31,17 +25,26 @@ const RecentlyViewed = () => {
       const ids = JSON.parse(stored);
       if (!ids || ids.length === 0) return;
 
-      // Fetch products by IDs
-      const fetched = [];
-      for (const id of ids.slice(0, 6)) {
-        try {
-          const product = await api.getProduct(id);
-          fetched.push(product);
-        } catch {
-          // Skip invalid products
+      const idsToFetch = ids.slice(0, 6);
+      try {
+        const data = await api.getProducts({ ids: idsToFetch.join(','), limit: 6 });
+        const fetched = data.products || [];
+        const ordered = idsToFetch
+          .map((id) => fetched.find((p) => p._id === id))
+          .filter(Boolean);
+        setProducts(ordered);
+      } catch {
+        const fetched = [];
+        for (const id of idsToFetch) {
+          try {
+            const product = await api.getProduct(id);
+            fetched.push(product);
+          } catch {
+            // Skip invalid products
+          }
         }
+        setProducts(fetched);
       }
-      setProducts(fetched);
     } catch {
       // Invalid localStorage data
     }
@@ -87,12 +90,14 @@ const RecentlyViewed = () => {
               onClick={() => router.push(`/products/${product._id}`)}
             >
               <div className="bg-white rounded-xl border border-neutral-200 overflow-hidden hover:shadow-lg hover:-translate-y-1 hover:border-neutral-300 transition-all duration-400">
-                <div className="aspect-square bg-neutral-50 overflow-hidden">
+                <div className="aspect-square bg-neutral-50 overflow-hidden relative">
                   {product.images && product.images[0] ? (
-                    <img
+                    <Image
                       src={getImageUrl(product.images[0])}
                       alt={product.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      fill
+                      sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 16vw"
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
